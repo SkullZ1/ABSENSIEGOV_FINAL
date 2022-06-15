@@ -32,7 +32,7 @@
                 <td>{{ $dt->role}}</td>
                 <td>{{ $dt->is_admin }}</td>
                 <td>
-                    <a href="/action/data/{id}" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#edit">
+                    <a href="/edit/{{$dt->id}}" type="submit" class="btn btn-warning">
                         <i class='bx bxs-edit'></i>Edit
                     </a>
                     <a href="/action/delete/{{$dt->id}}" type="button" class="btn btn-danger" action>
@@ -54,18 +54,20 @@
       <div class="modal-body">
         <form action="/action/edit/{{$dt->id}}" method="POST">
           @csrf
+          @foreach ($karyawan as $kar)
           <div class="mb-3">
             <label for="name" class="col-form-label">Name</label>
-            <input id="name" type="text" class="form-control" name="edit_name" value="{{ $dt->name }}" placeholder=" " autofocus>
+            <input id="name" type="text" class="form-control" name="edit_name" value="{{ $kar->name }}" placeholder=" " autofocus>
           </div>
           <div class="mb-3">
             <label for="email" class="col-form-label">Email</label>
-            <input id="email" type="text" class="form-control" name="edit_email" value="{{ $dt->email }}"  autofocus>
+            <input id="email" type="text" class="form-control" name="edit_email" value="{{ $kar->email }}"  autofocus>
           </div>
           <div class="mb-3">
             <label for="eemail" class="col-form-label">NIP</label>
-            <input id="eemail" type="text" class="form-control" name="edit_eemail" value="{{ $dt->eemail }}" autofocus maxlength="18">
+            <input id="eemail" type="text" class="form-control" name="edit_eemail" value="{{ $kar->eemail }}" autofocus maxlength="18">
           </div>
+          @endforeach
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           <a href="/action/edit/{{$dt->id}}" type="submit" class="btn btn-primary">Submit</a>
         </form>

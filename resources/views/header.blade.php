@@ -16,6 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- JavaScript -->
     <script src="style/js/bootstrap.bundle.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <link rel="stylesheet" href="{{ asset('toastr/toastr.min.css') }}">
 
    </head>
@@ -74,6 +75,7 @@
           <li><a class="link_name" href="#">Admin</a></li>
           <li><a href="{{ route('datakaryawan') }}">Data Karyawan</a></li>
           <li><a href="{{ route('presentasiAbsen') }}">Presentasi Absensi</a></li>
+          <li><a href="{{ route('admin') }}">Jam Kerja</a></a></li>
           <li><a href="#" data-bs-toggle="modal" data-bs-target="#tambahuser">Tambah User</a></li>
         </ul>
       </li>
@@ -202,7 +204,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Absen Ijin/Sakit</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Abssen Dinas Luar</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -222,7 +224,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="datepikcer">Tanggal Mulai DL</label>
-                    <input data-provide="datepicker">
+                    <input type="text"  name="tanggal"  class="form-control datepicker"  required/>
                 </div>
                 <div class="mb-3">
                     <label for="formFile" class="form-label">Dinas</label>
@@ -278,7 +280,15 @@
       </div>
     </div>
 </div>
-
+<script type="text/javascript">
+    $(function(){
+        $(".datepicker").datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            todayHighlight: true,
+        });
+    });
+</script>
 
 
 

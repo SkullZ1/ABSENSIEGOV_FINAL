@@ -7,12 +7,15 @@ use App\Models\surat;
 use App\Models\edit;
 use App\Models\User;
 use App\Models\datauser;
+use App\Models\jam;
 use Illuminate\Http\Request;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 date_default_timezone_set('Asia/Jakarta');
 use Illuminate\Support\Facades\DB;
 class HomeController extends Controller
@@ -35,7 +38,70 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('pns');
+        $date = date('Y-m-D');
+        $harilibur = Http::get("https://api-harilibur.vercel.app/api");
+        $hariliburnas = $harilibur->json('is_national_holiday','true');
+        $namaharilibur = $harilibur->json('holiday_name');
+        if(date('D',strtotime($date))==="SUN"){
+            if($hariliburnas){
+                absen::create([
+                    'tanggal' => date('Y-m-d'),
+                    'waktu' => date('G:i:s'),
+                    'keluar' => date('G:i:s'),
+                    'user_id' => Auth::user()->id,
+                    'keterangan' => 'Libur',
+                ]);
+                return view('pns');
+            }
+            else{
+                absen::create([
+                    'tanggal' => date('Y-m-d'),
+                    'waktu' => date('G:i:s'),
+                    'keluar' => date('G:i:s'),
+                    'user_id' => Auth::user()->id,
+                    'keterangan' => "Libur",
+                ]);
+                return view('pns');
+            }
+
+        }
+        else if(date('D',strtotime($date)) === "SAT"){
+            if($hariliburnas){
+                absen::create([
+                    'tanggal' => date('Y-m-d'),
+                    'waktu' => date('G:i:s'),
+                    'keluar' => date('G:i:s'),
+                    'user_id' => Auth::user()->id,
+                    'keterangan' => 'Libur',
+                ]);
+                return view('pns');
+            }
+            else{
+                absen::create([
+                    'tanggal' => date('Y-m-d'),
+                    'waktu' => date('G:i:s'),
+                    'keluar' => date('G:i:s'),
+                    'user_id' => Auth::user()->id,
+                    'keterangan' => "Libur",
+                ]);
+                return view('pns');
+            }
+        }
+        else{
+            if($hariliburnas){
+                absen::create([
+                    'tanggal' => date('Y-m-d'),
+                    'waktu' => date('G:i:s'),
+                    'keluar' => date('G:i:s'),
+                    'user_id' => Auth::user()->id,
+                    'keterangan' => 'Libur',
+                ]);
+                return view('pns');
+            }
+            else{
+                return view('pns');
+            }
+        }
     }
 
     public function tabel()
@@ -50,7 +116,16 @@ class HomeController extends Controller
 
     public function datakaryawan()
     {
-        return view('datakaryawan');
+        $data = DB::table('users')->get(); // ambil
+        $count = DB::table('users')->count(); // hitung
+        if(request('id') != NUll){
+            $karyawan = DB::table('users')->where('id',request('id'))->get();
+            return view ('datakaryawan',['karyawan'=>$karyawan,'data'=>$data,'count'=>$count]);
+        }
+        else{
+            $karyawan = DB::table('users')->where('id',Auth::user()->id)->get();
+            return view('datakaryawan',['karyawan'=>$karyawan,'data'=>$data,'count'=>$count]);
+        }
     }
 
     public function profil()
@@ -65,7 +140,8 @@ class HomeController extends Controller
 
     public function admin()
     {
-        return view('admin');
+        $jam = DB::table('jam')->get();
+        return view('admin',['jam'=>$jam]);
     }
 
     public function kabid()
@@ -75,7 +151,20 @@ class HomeController extends Controller
 
     public function pns()
     {
-        return view('pns');
+        $harilibur = Http::get("https://api-harilibur.vercel.app/api");
+        $hariliburnas = $harilibur->json('is_national_holiday','true');
+        if($hariliburnas == true){
+            absen::create([
+                'tanggal' => date('Y-m-d'),
+                'waktu' => date('G:i:s'),
+                'user_id' => Auth::user()->id,
+                'keterangan' => 'Libur',
+            ]);
+            return view('pns');
+        }
+        else{
+            return view('pns');
+        }
     }
 
     public function absensi()
@@ -186,22 +275,26 @@ class HomeController extends Controller
         return redirect('/datakaryawan')->with('success', 'Berhasil Menambahkan User '. date('Y-m-d') . ' ' . date('G:i:s'));
     }
 
-    public function datauser($id)
+    public function datauser()
     {
-        $data_user= DB::select('select * from users where id = ?', [$id]);
+        if(request('id') != NUll){
+            $karyawan = DB::table('users')->where('id',request('id'))->get();
+            return view('datakaryawan',['karyawan'=>$karyawan]);
+        }
+        else{
+            $karyawan = DB::table('users')->where('id',Auth::user()->id)->get();
+            return view('datakaryawan',['karyawan'=>$karyawan]);
+        }
     }
-    public function edit(Request $request,$id)
+    public function edit(Request $request)
     {
-        $data_user =DB::select('select * from users where id = ?', [$id]);
-        $user_name = $request->input('name');
-        $user_email = $request->input('email');
-        $user_eemail = $request->input('eemail');
-        DB::update('update from users set name = ?,email = ?,eemail = ?',[$user_name,$user_email,$user_eemail]);
-        return redirect('/datakaryawan')->with('success', 'Berhasil Mengedit Data '. date('Y-m-d') . ' ' . date('G:i:s'));
+        if(request('id') != NULL){
+            return view('edit',['data'=>datauser::where('id',request('id'))->get()]);
+        }
+        else{
+            return view('edit',['data'=>datauser::where('id',Auth::user()->id)->get()]);
+        }
     }
-
-
-
 
     public function destroy($id)
     {
@@ -212,8 +305,8 @@ class HomeController extends Controller
 
     public function hitungpresentasi()
     {
-        $hitungmasuk = absen::where('keterangan','Masuk')->where('user_id',  Auth::user()->id)->count();
-        $hitungmasuk = absen::where('keterangan','Ijin')->where('user_id',  Auth::user()->id)->get();
-        return ($hitungmasuk);
+        $harilibur = Http::get("https://api-harilibur.vercel.app/api");
+        return($harilibur);
     }
+
 }
