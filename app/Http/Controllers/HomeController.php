@@ -117,7 +117,7 @@ class HomeController extends Controller
     public function datakaryawan()
     {
         $data = DB::table('users')->get(); // ambil
-        $count = DB::table('users')->count(); // hitung
+        $count = count(datauser::all()); // hitung
         if(request('id') != NUll){
             $karyawan = DB::table('users')->where('id',request('id'))->get();
             return view ('datakaryawan',['karyawan'=>$karyawan,'data'=>$data,'count'=>$count]);
@@ -140,8 +140,19 @@ class HomeController extends Controller
 
     public function admin()
     {
-        $jam = DB::table('jam')->get();
+        $jam = jam::all();
         return view('admin',['jam'=>$jam]);
+    }
+
+    public function update(Request $request,User $user)
+    {
+        User::where('id',$user->id)->update([
+            'name'=> $request->edit_name,
+            'email'=> $request->edit_email,
+            'eemail'=> $request->edit_eemail,
+        ]
+        );
+        return redirect('/datakaryawan')->with('success','Berhasil Update Data');
     }
 
     public function kabid()
@@ -169,7 +180,9 @@ class HomeController extends Controller
 
     public function absensi()
     {
-        return view('absensi' , ['today' => absen::where('tanggal', date('Y-m-d'))->where('user_id', Auth::user()->id)->first()]);
+        $jam = jam::where('id','2')->first();
+        $jam2 = jam::where('id','3')->first();
+        return view('absensi' , ['today' => absen::where('tanggal', date('Y-m-d'))->where('user_id', Auth::user()->id)->first()],['jam'=>$jam,'jam2'=>$jam2]);
     }
 
     public function webcam()
@@ -239,13 +252,24 @@ class HomeController extends Controller
 
     public function absenmasuk(Request $request)
     {
-        absen::create([
-            'tanggal' => date('Y-m-d'),
-            'waktu' => date('G:i:s'),
-            'user_id' => Auth::user()->id,
-            'keterangan' => 'Masuk',
-        ]);
-        return redirect('/tabel')->with('success', 'Berhasil Absen Masuk Pada '. date('Y-m-d') . ' ' . date('G:i:s'));
+        $jam = jam::where('id','2')->first();
+        if(date('G:i') > $jam->jam_mulai && date('G:i') < $jam->jam_selesai){
+            absen::create([
+                'tanggal' => date('Y-m-d'),
+                'waktu' => date('G:i:s'),
+                'user_id' => Auth::user()->id,
+                'keterangan' => 'Masuk',
+            ]);
+            return redirect('/tabel')->with('success', 'Berhasil Absen Masuk Pada '. date('Y-m-d') . ' ' . date('G:i:s'));
+        }else{
+            absen::create([
+                'tanggal' => date('Y-m-d'),
+                'waktu' => date('G:i:s'),
+                'user_id' => Auth::user()->id,
+                'keterangan' => 'Terlambat/Bukan jam masuk',
+            ]);
+            return redirect('/tabel')->with('success', 'Berhasil Absen Masuk Pada '. date('Y-m-d') . ' ' . date('G:i:s'));
+        }
     }
 
     public function absenkeluar(absen $absen)
@@ -286,14 +310,18 @@ class HomeController extends Controller
             return view('datakaryawan',['karyawan'=>$karyawan]);
         }
     }
-    public function edit(Request $request)
+    public function edit(User $user)
     {
-        if(request('id') != NULL){
-            return view('edit',['data'=>datauser::where('id',request('id'))->get()]);
-        }
-        else{
-            return view('edit',['data'=>datauser::where('id',Auth::user()->id)->get()]);
-        }
+        return view('edit', compact('user'));
+    }
+    public function updatejam(Request $request,$id)
+    {
+        jam::where($id,$jam->id)->update([
+            'jam_masuk'=> $request->time_masuk,
+            'jam_selesai'=> $request->time_selesai,
+        ]
+        );
+        return redirect('/admin')->with('success','Berhasil Update Data');
     }
 
     public function destroy($id)
@@ -305,8 +333,6 @@ class HomeController extends Controller
 
     public function hitungpresentasi()
     {
-        $harilibur = Http::get("https://api-harilibur.vercel.app/api");
-        return($harilibur);
     }
 
 }

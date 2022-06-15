@@ -5,12 +5,12 @@
   <head>
     <meta charset="UTF-8">
     <!-- icon title -->
-    <link rel="icon" href="egov/img/logojateng.svg.png" type="image/icon type">
+    <link rel="icon" href="{{asset('egov/img/logojateng.svg.png')}}" type="image/icon type">
     <!--<title> Drop Down Sidebar Menu | CodingLab </title>-->
     <title>@yield('title')</title>
     <!-- CSS -->
-    <link rel="stylesheet" href="egov/style/sidebar.css">
-    <link href="style/css/bootstrap.css" rel="stylesheet" >
+    <link rel="stylesheet" href="{{asset('egov/style/sidebar.css')}}">
+    <link href="{{asset('style/css/bootstrap.css')}}" rel="stylesheet" >
     <!-- Boxiocns CDN Link -->
     <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +23,7 @@
 <body>
   <div class="sidebar close">
     <div class="logo-details">
-      <img src="egov/img/logojateng.svg.png" alt="" width="30" height="30" style="margin-left:25px">
+      <img src="{{asset('egov/img/logojateng.svg.png')}}" alt="" width="30" height="30" style="margin-left:25px">
       <span class="logo_name" style="margin-left:5px"> EGOVERMENT</span>
     </div>
     <ul class="nav-links">
@@ -101,7 +101,7 @@
       <div class="profile-content">
         <!--<img src="image/profile.jpg" alt="profileImg">-->
       </div>
-      <div class="image"><img src="egov/img/avatar.png" alt="Avatar" class="avatar"></div>
+      <div class="image"><img src="{{asset('egov/img/avatar.png')}}" alt="Avatar" class="avatar"></div>
       <div class="name-job">
         <div class="profile_name">{{ Auth::user()->name }}</div>
         <div class="job">{{ Auth::user()->role }}</div>

@@ -45,16 +45,19 @@ Route::post('/absensi/{absen}/keluar', [HomeController::class, 'absenkeluar']);
 
 // Route Admin
 Route::get('/datakaryawan', [HomeController::class, 'datakaryawan'])->name('datakaryawan');
-Route::get('/edit', [HomeController::class, 'edit'])->name('edit');
+Route::get('/edit', [HomeController::class, ''])->name('edit');
 Route::get('/presentasiAbsen', [HomeController::class, 'presentasiAbsen','hitungpresentasi'])->name('presentasiAbsen');
 Route::get('/admin', [HomeController::class, 'admin'])->middleware('checkRole:admin')->name('admin');
 Route::get('/action/data/{id}', [HomeController::class, 'datauser']);
 Route::get('/action/delete/{id}', [HomeController::class, 'destroy']);
-Route::get('/action/edit/{id}', [HomeController::class, 'edit']);
+Route::get('/action/edit/{user}', [HomeController::class, 'edit']);
+Route::patch('/action/update/{user}', [HomeController::class, 'update'])->name('update');
+Route::patch('/action/updatejam/{user}', [HomeController::class, 'updatejam'])->name('updatejam');
 Route::post('/tambahuser', [HomeController::class, 'tambahuser']);
 Route::post('/presentasiabsen', [HomeController::class, 'presentasiAbsen',]);
 
 // Route Kabid
 Route::get('kabid', [HomeController::class, 'kabid'])->middleware(['checkRole:kabid,admin']);
 
-Route::get('/hitungabsensi', [HomeController::class,'hitungpresentasi']);
+Route::get('/coba', [HomeController::class,'hitungpresentasi']);
+

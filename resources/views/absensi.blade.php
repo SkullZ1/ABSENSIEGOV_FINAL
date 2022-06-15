@@ -14,30 +14,40 @@
     <tr>
       <th scope="row"><span id="tanggalwaktu"></span></th>
       <td>
-        @if ($today == NULL)
-        <form action="/absensi/masuk" method="post">
-          @csrf
-          <button type="submit" class="btn btn-success">Absen Masuk</button>
-        </form>
+        @if(date('G:i') > $jam->jam_mulai && date('G:i') < $jam->jam_selesai)
+            @if ($today == NULL)
+            <form action="/absensi/masuk" method="post">
+            @csrf
+            <button type="submit" class="btn btn-success">Absen Masuk</button>
+            </form>
+            @else
+            <button type="submit" class="btn btn-success" disabled>Absen Masuk</button>
+            @endif
+            </td>
         @else
-        <button type="submit" class="btn btn-success" disabled>Absen Masuk</button>
+            <button type="submit" class="btn btn-success" disabled>Absen Masuk</button>
         @endif
-      </td>
-      <td>
-        @if ($today == NULL)
-        <button type="submit" class="btn btn-danger" disabled>Absen Keluar</button>
-        @else
+        @if(date('G:i') > $jam->jam_mulai && date('G:i') < $jam->jam_selesai)
+        <td>
+          @if ($today == NULL)
+          <button type="submit" class="btn btn-danger" disabled>Absen Keluar</button>
+          @else
 
-        @if ($today->keluar != NULL)
-        <button type="submit" class="btn btn-danger" disabled>Absen Keluar</button>
+          @if ($today->keluar != NULL)
+          <button type="submit" class="btn btn-danger" disabled>Absen Keluar</button>
+          @else
+          <form action="/absensi/{{$today->id}}/keluar" method="post">
+            @csrf
+            <button type="submit" class="btn btn-danger">Absen Keluar</button>
+          </form>
+          @endif
+          @endif
+        </td>
         @else
-        <form action="/absensi/{{$today->id}}/keluar" method="post">
-          @csrf
-          <button type="submit" class="btn btn-danger">Absen Keluar</button>
-        </form>
+        <td>
+            <button type="submit" class="btn btn-danger" disabled>Absen Keluar</button>
+        </td>
         @endif
-        @endif
-      </td>
 
     </tr>
   </tbody>

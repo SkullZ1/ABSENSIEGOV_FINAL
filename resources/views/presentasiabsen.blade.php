@@ -97,8 +97,6 @@
       </div>
   </div>
 <br>
-
-<div class="container">
     <table class="table table-bordered">
         <thead>
           <tr class="table-dark">
@@ -137,6 +135,5 @@
           @endforeach
         </tbody>
       </table>
-      </div>
       @endsection
 </div>

@@ -6,22 +6,29 @@
     <table class="table table-bordered">
         <thead>
             <tr class="table-dark">
-                <th scope="col">No</th>
                 <th scope="col">Keterangan</th>
                 <th scope="col">Jam Masuk</th>
                 <th scope="col">Jam Selesai</th>
+                <th scope="col">Action</th>
             </tr>
         </thead>
         <tbody>
-            <tr class="table-active">
-                @foreach($jam as $jm)
-                <th scope="row">{{$no++}}</th>
-                <td>{{$jm->Keterangan}}</td>
-                <td>{{$jm->Jam_Mulai}}</td>
-                <td>{{$jm->Jam_Selesai}}</td>
-                <td><a href="" class="btn-primary">Edit</a></td>
+            @foreach($jam as $jm)
+            <form action="/action/updatejam/{{$jm->id}}" method="post">
+            @csrf
+            @method('PATCH')
+                <tr class="table-active">
+                    <td>{{$jm->Keterangan}}</td>
+                    <td>
+                        <input type="time" id="time" name="time_mulai" value="{{$jm->jam_mulai}}">
+                    </td>
+                    <td>
+                        <input type="time" id="time" name="time_selesai" value="{{$jm->jam_selesai}}">
+                    </td>
+                    <td><button class="btn btn-success">Submit</button></td>
+                </tr>
+            </form>
                 @endforeach
-            </tr>
         </tbody>
     </table>
 </div>

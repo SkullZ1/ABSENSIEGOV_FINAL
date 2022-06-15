@@ -32,7 +32,7 @@
                 <td>{{ $dt->role}}</td>
                 <td>{{ $dt->is_admin }}</td>
                 <td>
-                    <a href="/edit/{{$dt->id}}" type="submit" class="btn btn-warning">
+                    <a href="/action/edit/{{$dt->id}}" type="submit" class="btn btn-warning">
                         <i class='bx bxs-edit'></i>Edit
                     </a>
                     <a href="/action/delete/{{$dt->id}}" type="button" class="btn btn-danger" action>
